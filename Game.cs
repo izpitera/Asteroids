@@ -14,8 +14,12 @@ namespace Asteroids
         private static BufferedGraphicsContext _context;
         public static BufferedGraphics Buffer;
 
+        static public Random RandomInt { get; } = new Random();
+
         public static int Width { get; set; }
         public static int Height { get; set; }
+
+        static public Image background = Image.FromFile(@"Images\galaxy.jpg");
 
         public static BaseObject[] _objs;
         static Game()
@@ -51,7 +55,8 @@ namespace Asteroids
             //Buffer.Graphics.FillEllipse(Brushes.Wheat, new Rectangle(100, 100, 200, 200));
             //Buffer.Render();
 
-            Buffer.Graphics.Clear(Color.Black);
+            //Buffer.Graphics.Clear(Color.Black);
+            Buffer.Graphics.DrawImage(background, 0, 0);
             foreach (BaseObject obj in _objs)
                 obj.Draw();
             Buffer.Render();
@@ -65,15 +70,14 @@ namespace Asteroids
 
         public static void Load(int numberOfObjects)
         {
-            Random r = new Random();
             _objs = new BaseObject[numberOfObjects];
             for (int i = 0; i < _objs.Length / 2; i++)
-                _objs[i] = new BaseObject(new Point(r.Next(0, Game.Width), r.Next(0, Game.Height)),
-                    new Point(r.Next(1, 10), r.Next(1, 10)),
+                _objs[i] = new BaseObject(new Point(RandomInt.Next(0, Game.Width), RandomInt.Next(0, Game.Height)),
+                    new Point(RandomInt.Next(1, 10), RandomInt.Next(1, 10)),
                     new Size(10, 10));
             for (int i = _objs.Length / 2; i < _objs.Length; i++)
-                _objs[i] = new Star(new Point(r.Next(0, Game.Width), r.Next(0, Game.Height)), 
-                    new Point(r.Next(1, 10), 0), 
+                _objs[i] = new Star(new Point(RandomInt.Next(0, Game.Width), RandomInt.Next(0, Game.Height)), 
+                    new Point(RandomInt.Next(1, 10), 0), 
                     new Size(5, 5));
 
         }

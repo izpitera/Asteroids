@@ -12,15 +12,18 @@ namespace Asteroids.Objects
         protected Point Pos;
         protected Point Dir;
         protected Size Size;
+
         public BaseObject(Point pos, Point dir, Size size)
         {
             Pos = pos;
             Dir = dir;
             Size = size;
         }
+
         public virtual void Draw()
         {
             Game.Buffer.Graphics.DrawEllipse(Pens.White, Pos.X, Pos.Y, Size.Width, Size.Height);
+
         }
         public virtual void Update()
         {
