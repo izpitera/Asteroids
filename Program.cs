@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 namespace Asteroids
 {
+    // Konstantin Konovalov
     class Program
     {
         static void Main(string[] args)
@@ -16,6 +17,7 @@ namespace Asteroids
                 Width = 800,
                 Height = 600
             };
+
             Game.Init(form);
             form.Show();
             Game.Draw();
