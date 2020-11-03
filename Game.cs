@@ -22,6 +22,10 @@ namespace Asteroids
         public static BaseObject[] _objs;
         private static Bullet _bullet;
         private static Asteroid[] _asteroids;
+        private static Ship _ship = new Ship(new Point(10, 400), new Point(5, 5), new Size(100, 60));
+
+        public static Timer timer = new Timer { Interval = 100 };
+
         static Game()
         {
         }
@@ -44,10 +48,24 @@ namespace Asteroids
             // baseobjects initialization
             Load(30);
 
-            Timer timer = new Timer { Interval = 100 };
             timer.Start();
             timer.Tick += Timer_Tick;
+
+            form.KeyDown += Form_KeyDown;
+
+            Ship.MessageDie += Finish;
         }
+
+        private static void Form_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.ControlKey) _bullet = new Bullet(
+                new Point(_ship.Rect.X + _ship.Rect.Width, _ship.Rect.Y + _ship.Rect.Height/2), 
+                new Point(4, 0), 
+                new Size(4, 1));
+            if (e.KeyCode == Keys.Up) _ship.Up();
+            if (e.KeyCode == Keys.Down) _ship.Down();
+        }
+
         public static void Draw()
         {
             // Проверяем вывод графики
@@ -57,29 +75,47 @@ namespace Asteroids
             //Buffer.Render();
 
             //Buffer.Graphics.Clear(Color.Black)
+
             Buffer.Graphics.DrawImage(background, 0, 0);
             foreach (BaseObject obj in _objs) obj.Draw();
-            foreach (Asteroid obj in _asteroids) obj.Draw();
-            _bullet.Draw();
+            foreach (Asteroid a in _asteroids)
+            {
+                a?.Draw();
+            }
+            _bullet?.Draw();
+            _ship?.Draw();
+            if (_ship != null)
+                Buffer.Graphics.DrawString("Energy:" + _ship.Energy, SystemFonts.DefaultFont, Brushes.White, 0, 0);
             Buffer.Render();
         }
 
         public static void Update()
         {
-            foreach (BaseObject obj in _objs)
-                obj.Update();
-            foreach (Asteroid a in _asteroids)
+            foreach (BaseObject obj in _objs) obj.Update();
+            _bullet?.Update();
+            for (var i = 0; i < _asteroids.Length; i++)
             {
-                a.Update();
-                if (a.Collision(_bullet)) { System.Media.SystemSounds.Hand.Play(); }
+                if (_asteroids[i] == null) continue;
+                _asteroids[i].Update();
+                if (_bullet != null && _bullet.Collision(_asteroids[i]))
+                {
+                    System.Media.SystemSounds.Hand.Play();
+                    _asteroids[i] = null;
+                    _bullet = null;
+                    continue;
+                }
+                if (!_ship.Collision(_asteroids[i])) continue;
+                var rnd = new Random();
+                _ship?.EnergyLow(rnd.Next(1, 10));
+                System.Media.SystemSounds.Asterisk.Play();
+                if (_ship.Energy <= 0) _ship?.Die();
             }
-            _bullet.Update();
+
         }
 
         public static void Load(int numberOfObjects)
         {
             _objs = new BaseObject[numberOfObjects];
-            _bullet = new Bullet(new Point(0, 200), new Point(5, 0), new Size(4, 1));
             _asteroids = new Asteroid[12];
 
             for (int i = 0; i < _asteroids.Length; i++)
@@ -96,6 +132,12 @@ namespace Asteroids
         {
             Draw();
             Update();
+        }
+        public static void Finish()
+        {
+            timer.Stop();
+            Buffer.Graphics.DrawString("The End", new Font(FontFamily.GenericSansSerif, 60, FontStyle.Underline), Brushes.White, 200, 100);
+            Buffer.Render();
         }
     }
 }
