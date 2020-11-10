@@ -10,6 +10,7 @@ namespace Asteroids.Objects
 {
     class Asteroid : BaseObject
     {
+        static public int asteroidCount = 10;
         private Random r = new Random();
         private Image[] pics = { 
             Image.FromFile(@"Images\a1.png"),
@@ -26,9 +27,7 @@ namespace Asteroids.Objects
             Power = 1;
         }
         public override void Draw()
-        {
-            //Game.Buffer.Graphics.FillEllipse(Brushes.White, Pos.X, Pos.Y, Size.Width, Size.Height);
-           
+        {          
             Game.Buffer.Graphics.DrawImage(pics[r.Next(6)], Pos.X, Pos.Y, Size.Width, Size.Height);
         }
     }

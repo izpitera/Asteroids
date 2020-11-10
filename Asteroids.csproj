@@ -52,6 +52,7 @@
     <Compile Include="Objects\BaseObject.cs" />
     <Compile Include="Objects\Asteroid.cs" />
     <Compile Include="Objects\Bullet.cs" />
+    <Compile Include="Objects\Medpack.cs" />
     <Compile Include="Objects\Ship.cs" />
     <Compile Include="Objects\Star.cs" />
     <Compile Include="Program.cs" />
@@ -84,6 +85,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\galaxy.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\med.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\s1.png">

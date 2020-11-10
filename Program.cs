@@ -11,7 +11,7 @@ namespace Asteroids
     class Program
     {
         static void Main(string[] args)
-        {
+        { 
             Form form = new Form
             {
                 Width = 800,

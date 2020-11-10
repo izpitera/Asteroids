@@ -30,7 +30,6 @@ namespace Asteroids.Objects
         {
             Pos.X += Dir.X;
             Pos.Y += Dir.Y;
-            //if (Pos.X < 0) Pos.X = Game.Width + Size.Width;
             if (Pos.X < 0 || Pos.X > Game.Width) Dir.X *= -1;
             if (Pos.Y < 0 || Pos.Y > Game.Height) Dir.Y *= -1;
         }

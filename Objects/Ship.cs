@@ -19,6 +19,10 @@ namespace Asteroids.Objects
         {
             _energy -= n;
         }
+        public void EnergyUp(int n)
+        {
+            _energy += n;
+        }
         public Ship(Point pos, Point dir, Size size) : base(pos, dir, size)
         {
         }

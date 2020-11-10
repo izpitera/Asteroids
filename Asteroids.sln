@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asteroids", "Asteroids.cspr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Employee", "..\Employee\Employee.csproj", "{1BA0863A-4EA4-4D9E-964C-AF43DDCE6505}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Collections", "..\Collections\Collections.csproj", "{4A363A2B-2F6F-4EB1-9EA4-2C6A501969FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1BA0863A-4EA4-4D9E-964C-AF43DDCE6505}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BA0863A-4EA4-4D9E-964C-AF43DDCE6505}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BA0863A-4EA4-4D9E-964C-AF43DDCE6505}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A363A2B-2F6F-4EB1-9EA4-2C6A501969FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A363A2B-2F6F-4EB1-9EA4-2C6A501969FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A363A2B-2F6F-4EB1-9EA4-2C6A501969FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A363A2B-2F6F-4EB1-9EA4-2C6A501969FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

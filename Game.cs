@@ -19,10 +19,12 @@ namespace Asteroids
 
         static public Image background = Image.FromFile(@"Images\galaxy.jpg");
 
-        public static BaseObject[] _objs;
-        //private static Bullet _bullet;
+        //public static BaseObject[] _objs;
+        private static List<Star> _stars = new List<Star>();
         private static List<Bullet> _bullets = new List<Bullet>();
-        private static Asteroid[] _asteroids;
+        private static List<Medpack> _medpacks = new List<Medpack>();
+        private static List<Asteroid> _asteroids = new List<Asteroid>();
+        //private static Asteroid[] _asteroids;
         private static Ship _ship = new Ship(new Point(10, 400), new Point(5, 5), new Size(100, 60));
 
         public static Timer timer = new Timer { Interval = 100 };
@@ -47,7 +49,7 @@ namespace Asteroids
             // Связываем буфер в памяти с графическим объектом, чтобы рисовать в буфере
             Buffer = _context.Allocate(g, new Rectangle(0, 0, Width, Height));
             // baseobjects initialization
-            Load(30);
+            Load();
 
             timer.Start();
             timer.Tick += Timer_Tick;
@@ -78,13 +80,10 @@ namespace Asteroids
             //Buffer.Graphics.Clear(Color.Black)
 
             Buffer.Graphics.DrawImage(background, 0, 0);
-            foreach (BaseObject obj in _objs) obj.Draw();
-            foreach (Asteroid a in _asteroids)
-            {
-                a?.Draw();
-            }
-            //_bullet?.Draw();
-            foreach (Bullet b in _bullets) b.Draw();
+            foreach (BaseObject d in _stars) d.Draw();
+            foreach (Asteroid a in _asteroids) a?.Draw();
+            foreach (Bullet b in _bullets) b?.Draw();
+            foreach (Medpack c in _medpacks) c?.Draw();
             _ship?.Draw();
             if (_ship != null)
                 Buffer.Graphics.DrawString("Energy:" + _ship.Energy, SystemFonts.DefaultFont, Brushes.White, 0, 0);
@@ -93,41 +92,77 @@ namespace Asteroids
 
         public static void Update()
         {
-            foreach (BaseObject obj in _objs) obj.Update();
+            foreach (Star a in _stars) a.Update();
             foreach (Bullet b in _bullets) b.Update();
-            for (var i = 0; i < _asteroids.Length; i++)
+            foreach (Medpack c in _medpacks) c.Update();
+            var temp_b = new List<Bullet>();
+            var temp_a = new List<Asteroid>();
+            var temp_m = new List<Medpack>();
+
+            if (_asteroids.Count == 0)
             {
-                if (_asteroids[i] == null) continue;
-                _asteroids[i].Update();
-                for (int j = 0; j < _bullets.Count; j++)
-                    if (_asteroids[i] != null && _bullets[j].Collision(_asteroids[i]))
+                Asteroid.asteroidCount++;
+                for (int i = 0; i < Asteroid.asteroidCount; i++) _asteroids.Add(new Asteroid(
+                                    new Point(RandomInt.Next(Game.Width / 2, Game.Width), RandomInt.Next(0, Game.Height)),
+                                    new Point(RandomInt.Next(1, 10), RandomInt.Next(1, 10)),
+                                    new Size(RandomInt.Next(10, 50), RandomInt.Next(10, 50))));
+            }
+            if (_medpacks.Count == 0)
+            {
+                _medpacks.Add(new Medpack(
+                            new Point(RandomInt.Next(Game.Width / 2, Game.Width), RandomInt.Next(20, Game.Height)),
+                            new Point(RandomInt.Next(1, 5), 0),
+                            new Size(30, 25)));
+            }
+
+            foreach (var asteroid in _asteroids)
+            {
+                asteroid.Update();
+                foreach (var bullet in _bullets)
+                    if (bullet.Collision(asteroid))
                     {
                         System.Media.SystemSounds.Hand.Play();
-                        _asteroids[i] = null;
-                        _bullets.RemoveAt(j);
-                        j--;
+                        temp_a.Add(asteroid);
+                        temp_b.Add(bullet);
                     }
-                if (_asteroids[i] == null || !_ship.Collision(_asteroids[i])) continue;
-                _ship.EnergyLow(RandomInt.Next(1, 10));
-                System.Media.SystemSounds.Asterisk.Play();
-                if (_ship.Energy <= 0) _ship.Die();
+                if (_ship.Collision(asteroid))
+                {
+                    _ship.EnergyLow(RandomInt.Next(1, 10));
+                    System.Media.SystemSounds.Asterisk.Play();
+                    temp_a.Add(asteroid);
+                    if (_ship.Energy <= 0) _ship.Die();
+                }
             }
+            foreach (var medpack in _medpacks)
+            {
+                if (medpack.Collision(_ship))
+                {
+                    temp_m.Add(medpack);
+                    _ship.EnergyUp(RandomInt.Next(10, 30));
+                }
+            }
+            foreach (Bullet b in temp_b) _bullets.Remove(b);
+            foreach (Asteroid a in temp_a) _asteroids.Remove(a);
+            foreach (Medpack m in temp_m) _medpacks.Remove(m);
         }
 
-
-        public static void Load(int numberOfObjects)
+        public static void Load()
         {
-            _objs = new BaseObject[numberOfObjects];
-            _asteroids = new Asteroid[12];
 
-            for (int i = 0; i < _asteroids.Length; i++)
-                _asteroids[i] = new Asteroid(new Point(RandomInt.Next(0, Game.Width), RandomInt.Next(0, Game.Height)),
+            for (int i = 0; i < Asteroid.asteroidCount; i++) _asteroids.Add( new Asteroid(
+                    new Point(RandomInt.Next(Game.Width / 2, Game.Width), RandomInt.Next(0, Game.Height)),
                     new Point(RandomInt.Next(1, 10), RandomInt.Next(1, 10)),
-                    new Size(RandomInt.Next(10, 50), RandomInt.Next(10, 50)));
-            for (int i = 0; i < _objs.Length; i++)
-                _objs[i] = new Star(new Point(RandomInt.Next(0, Game.Width), RandomInt.Next(0, Game.Height)),
+                    new Size(RandomInt.Next(10, 50), RandomInt.Next(10, 50))));
+
+            for (int i = 0; i < Star.starCount; i++) _stars.Add( new Star(
+                    new Point(RandomInt.Next(0, Game.Width), RandomInt.Next(0, Game.Height)),
                     new Point(RandomInt.Next(1, 10), 0),
-                    new Size(60, 70));
+                    new Size(RandomInt.Next(50, 80), RandomInt.Next(60, 100))));
+
+            _medpacks.Add(new Medpack(
+                new Point(RandomInt.Next(Game.Width/2, Game.Width), RandomInt.Next(20, Game.Height)),
+                new Point(RandomInt.Next(1, 5), 0),
+                new Size(30, 25)));
 
         }
         private static void Timer_Tick(object sender, EventArgs e)
